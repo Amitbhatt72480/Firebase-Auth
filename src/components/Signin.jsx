@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { UserAuth } from '../contexts/AuthContext'
+import {GoogleButton} from 'react-google-button';
 
 const Signin = () => {
 
@@ -9,6 +10,22 @@ const Signin = () => {
   const [error, setError] = useState('')
   const navigate = useNavigate();
   const {signin} = UserAuth();
+  const {googleSignin, user} = UserAuth()
+
+  const handleGoogleSignin = async ()=>{
+    try {
+      await googleSignin()
+      
+    } catch (e) {
+      console.log(e.message);
+    }
+  }
+
+  useEffect(()=>{
+    if(user != null){
+      navigate('/account')
+    }
+  },[user])
 
   const handleSubmit = async (e)=>{
     e.preventDefault()
@@ -42,7 +59,10 @@ const Signin = () => {
         <label  className="py-2 font-medium ">Password</label>
         <input onChange={(e)=>{setPassword(e.target.value)}} type="password" placeholder='Enter your password' className="border-2 py-2 px-3 " />
       </div>
-      <button className="bg-blue-500 px-4 mt-5 py-2 text-white rounded-md">Sign Up</button>
+      <div className="flex items-center mt-5 ">
+      <button className="bg-blue-500 px-4 py-2 text-white rounded-md">Sign In</button>
+      <GoogleButton className="ml-7" onClick={handleGoogleSignin}/>
+      </div>
     </form>
   </div>
   )
